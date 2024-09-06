@@ -1,4 +1,4 @@
-package main
+package spotify
 
 import (
 	"context"
@@ -17,12 +17,12 @@ const redirectURI = "http://localhost:8080/callback"
 
 var (
 	// Make clientId and Secret hidden
-	auth  = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate), spotifyauth.WithClientID("93d063e6d3e24159b2adefec1f8266f0"), spotifyauth.WithClientSecret("a53d4c8842334c1090d6c0bb1cf46428"))
+	auth  = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate), spotifyauth.WithClientID("clientID"), spotifyauth.WithClientSecret("secret"))
 	ch    = make(chan *spotify.Client)
 	state = "abc123"
 )
 
-func main() {
+func getClient() *spotify.Client {
 	// first start an HTTP server
 	http.HandleFunc("/callback", completeAuth)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +47,7 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("You are logged in as:", user.ID)
+	return client
 }
 
 func completeAuth(w http.ResponseWriter, r *http.Request) {
