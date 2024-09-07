@@ -2,7 +2,10 @@ module playlist-transfer-go
 
 go 1.20
 
-require github.com/zmb3/spotify/v2 v2.4.2
+require (
+	github.com/joho/godotenv v1.5.1
+	github.com/zmb3/spotify/v2 v2.4.2
+)
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect

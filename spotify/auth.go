@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/joho/godotenv"
 	"github.com/zmb3/spotify/v2"
+	"os"
 )
 
 // redirectURI is the OAuth redirect URI for the application.
@@ -16,13 +18,24 @@ import (
 const redirectURI = "http://localhost:8080/callback"
 
 var (
+	clientId, clientSecret = getKeys()
 	// Make clientId and Secret hidden
-	auth  = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate), spotifyauth.WithClientID("clientID"), spotifyauth.WithClientSecret("secret"))
+	auth  = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate), spotifyauth.WithClientID(clientId), spotifyauth.WithClientSecret(clientSecret))
 	ch    = make(chan *spotify.Client)
 	state = "abc123"
 )
 
-func getClient() *spotify.Client {
+func getKeys() (string, string) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	clientId := os.Getenv("SPOTIFY_ID")
+	clientSecret := os.Getenv("SPOTIFY_SECRET")
+	return clientId, clientSecret
+}
+
+func GetClient() *spotify.Client {
 	// first start an HTTP server
 	http.HandleFunc("/callback", completeAuth)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

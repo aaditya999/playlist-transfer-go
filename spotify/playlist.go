@@ -6,7 +6,7 @@ import (
 )
 
 func getPlaylist() {
-	spotifyClient := getClient()
+	spotifyClient := GetClient()
 	ctx := context.Background()
 	playlist, err := spotifyClient.GetPlaylistItems(ctx, "id")
 	if err != nil {
